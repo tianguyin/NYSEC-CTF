@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 90vh;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-container">
+  <h2 class="login-title">Login</h2>
+  <div class="input-group">
+    <input id="email" type="text" placeholder="Email">
+  </div>
+  <div class="input-group">
+    <input id="password" type="password" placeholder="Password">
+  </div>
+  <button class="btn-login"  onclick="login()">Login</button>
+  <a class="re-gister" href="/register" >register</a>
+</div>
+<script src="/js/server.js"></script>
+<script>
+  setInterval(function (){
+    var cookies = document.cookie;
+    var storeTOKEN = cookies.substring("token=".length,cookies.length)
+    if (storeTOKEN.length >0){
+      window.location.href = "/";
+    }
+  },1000)
+</script>
+</body>
+</html>
