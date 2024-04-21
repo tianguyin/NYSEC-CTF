@@ -5,14 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NYSEC CTF</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/css/styles.css">
-    <style id="parsed-css">
-        body {
-            background-image: url('/picture/background');
-            background-size: cover; /* 让背景图片充满整个页面 */
-            background-position: center; /* 将背景图片居中 */
-        }
-    </style>
 </head>
 <body>
 <div class="nav" id="nav">
@@ -26,28 +20,26 @@
     </ul>
 </div>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top">
-    <a class="navbar-brand" href="/" >NYSEC CTF</a>
+    <a class="navbar-brand" href="/challenges" >返回</a>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/challenges">Challenges</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/link">Link</a>
+<!--                <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>-->
             </li>
         </ul>
         <div>
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="border-radius: 50% ; height: 40px;width: 40px" onclick="toggleNav()"></button>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="border-radius: 50% ; height: 40px;width: 40px" onclick="toggleNav()">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </div>
 </nav>
 
 <main role="main" class="container" id="main-content">
-    <h1 class="nysec-title">NYSEC</h1>
-    <div style="height: auto"></div>
+<div>
+    <h1>Web</h1>
+</div>
+<span class="web-challenge" id="challenge">暂时没有题目哦!</span>
 </main>
 <script src="/js/styles.js"></script>
 <script src="/js/user.js"></script>

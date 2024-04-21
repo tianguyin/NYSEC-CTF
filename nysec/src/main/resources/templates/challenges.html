@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NYSEC CTF</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body{
+            background-image: url(https://api.sretna.cn/layout/pc.php);
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
 <body>
 <div class="nav" id="nav">
@@ -15,7 +24,7 @@
         <li><a href="#">栏目3</a></li>
         <li><a href="#">栏目4</a></li>
         <li><a href="#">栏目5</a></li>
-        <li><a href="/login">登录</a></li>
+        <li><a id="mylogin" href="/login">登录</a></li>
     </ul>
 </div>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top">
@@ -32,67 +41,40 @@
                 <a class="nav-link" href="/link">Link</a>
             </li>
         </ul>
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="border-radius: 50% ; height: 40px;width: 40px" onclick="toggleNav()"></button>    </div>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="border-radius: 50% ; height: 40px;width: 40px" onclick="toggleNav()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
 </nav>
 
-<main role="main" class="container" id="main-content">
-    <!-- Change onclick to use a variable -->
-    <div id="challengeLinksContainer"></div>
+<main role="main" class="container" id="main-content" style="display: flex; flex-wrap: wrap;">
+
+    <a class="section" id="web" onclick="change('/web')" style="background-image: url(https://api.sretna.cn/comic.php);background-size: cover;background-position: center;">
+        Web
+    </a>
+    <a class="section" id="misc" onclick="change('/misc')" >
+        Misc
+    </a>
+    <a class="section" id="crypto" onclick="change('/crypto')" >
+        Crypto
+    </a>
+    <a class="section" id="reverse" onclick="change('/reverse')" >
+        Reverse
+    </a>
+    <a class="section" id="pwn" onclick="change('/pwn')" >
+        Pwn
+    </a>
+    <a class="section" id="awd" onclick="change('/awd')" >
+        Awd
+    </a>
+    <a class="section" id="penetration" onclick="change('/penetration')" >
+        渗透测试
+    </a>
+    <a class="section" id="iot" onclick="change('/iot')" >
+        IOT
+    </a>
 </main>
-
-<script>
-    // Define a variable to store the current challenge number
-    let num = 5;
-
-    // Function to update the challenge links
-    function updateChallengeLinks() {
-        const challengeLinksContainer = document.getElementById('challengeLinksContainer');
-        challengeLinksContainer.innerHTML = ''; // Clear previous links
-        for (let i = 1; i <= num; i++) {
-            const link = document.createElement('a');
-            link.className = 'nav-link';
-            link.style.color = '#c82333';
-            link.style.height = '10px';
-            link.textContent = 'Challenges' + i;
-            link.onclick = function() {
-                docker_pull(i);
-            };
-            challengeLinksContainer.appendChild(link);
-            challengeLinksContainer.appendChild(document.createElement('br')); // Add line break after each link
-        }
-    }
-
-    // Function to handle docker pull
-    function docker_pull(docker_num) {
-        const postData = {
-            isPull: "True",
-            serial: docker_num
-        };
-
-        fetch('/start', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(postData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('POST request succeeded with JSON response:', data);
-            })
-            .catch(error => {
-                console.error('There was a problem with the POST request:', error);
-            });
-    }
-
-    // Call the update function initially
-    updateChallengeLinks();
-</script>
+<script src="/js/challenges.js"></script>
 <script src="/js/styles.js"></script>
 <script src="/js/user.js"></script>
 </body>

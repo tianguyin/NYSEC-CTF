@@ -2,6 +2,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -44,12 +45,28 @@ public class mainService {
                 handlePOSTdata(exchange, requestMethod, path);
                 handleRegister(exchange, requestMethod, path);
                 handleLogin(exchange, requestMethod, path);
+                handleScoreSort(exchange,requestMethod,path);
                 responseBody.close();
-            } catch (IOException | NoSuchAlgorithmException e) {
+            } catch (IOException | NoSuchAlgorithmException|SQLException | ClassNotFoundException e) {
                 sendResponse(exchange, 404, "404 Not Found: Page not found");
                 throw new RuntimeException(e);
             }
         }
+        }
+        private static void handleScoreSort(HttpExchange exchange, String requestMethod, String path) throws IOException, SQLException, ClassNotFoundException {
+            if (requestMethod.equalsIgnoreCase("POST") && path.equals("/data/common/scoredata/api")) {
+                List<sort.Info> scoreInfo = sort.getInfo();
+                scoreInfo.sort(Comparator.comparingInt(info -> info.score));
+                JSONArray jsonArray = new JSONArray();
+                for (sort.Info info : scoreInfo) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("username", info.username);
+                    jsonObject.put("score", info.score);
+                    jsonArray.put(jsonObject);
+                }
+                String jsonResponse = jsonArray.toString();
+                sendJSONResponse(exchange,200,jsonResponse);
+            }
         }
         private static void handleRegister(HttpExchange exchange, String requestMethod, String path) throws IOException, NoSuchAlgorithmException {
             keyWord keyWord = new keyWord();
@@ -65,8 +82,8 @@ public class mainService {
                     String comfiremHash = enCryption.hash(comfirem);
                     String[] userInfo = {username, password,email, introduction, comfiremHash};
                     dbUserUse.dbExecute(keyWord.sqlExecuteUser, userInfo);
-                    System.out.println(Arrays.toString(userInfo));
-
+                    String[] scoreInfo = {comfiremHash, String.valueOf(0),username};
+                    score.dbScoreInsert(scoreInfo);
                 } catch (IOException | NoSuchAlgorithmException | SQLException |
                          ClassNotFoundException e) {
                     throw new RuntimeException(e);
@@ -83,7 +100,6 @@ public class mainService {
                 String password = (String) jsonObject.get("password");
                 String comfire = email + password;
                 String comfirehash = enCryption.hash(comfire);
-                System.out.println(comfirehash);
                 String sql = "SELECT * FROM user WHERE hash = " + "'"+comfirehash+"'";
                 try {
                     String[] Info = dbUserUse.dbSearch(sql);
@@ -95,7 +111,6 @@ public class mainService {
                     sendTOKEN.put("introduction", Info[2]);
                     sendTOKEN.put("token",token);
                     sendJSONResponse(exchange,200,sendTOKEN.toString());
-                    System.out.println(token);
                 } catch (ClassNotFoundException | SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -110,30 +125,6 @@ public class mainService {
             OutputStream responseBody = exchange.getResponseBody();
             responseBody.write(jsonResponse.getBytes());
             responseBody.close();
-        }
-        private static void handleUploadImage(HttpExchange exchange, String requestMethod, String path,String username) throws IOException {
-                if(requestMethod.equalsIgnoreCase("POST") && path.equals("/register/upload/picture/api")){
-                    try {
-                        String imgData = getRequestData(exchange);
-                        saveImage(username,imgData);
-                        sendResponse(exchange, 200, "Image uploaded successfully");
-                    } catch (Exception e) {
-                        sendResponse(exchange,404,"404 NOT FOUND");
-                    }
-                }
-        }
-        private static void saveImage(String username, String imgData) {
-                String uploadDir = "./userInputFile";
-                File directory = new File(uploadDir);
-                if(!directory.exists()){
-                    directory.mkdirs();
-                }
-                String path = uploadDir + File.separator + username + ".jpg";
-                try (OutputStream outputStream = new FileOutputStream(path)){
-                    outputStream.write(imgData.getBytes());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
         }
         private static void handlePOSTdata(HttpExchange exchange, String requestMethod,String path) throws IOException {
             if (requestMethod.equalsIgnoreCase("POST") && path.equals("/start")) {
@@ -212,6 +203,8 @@ public class mainService {
                         break;
                     case "/js/home.js":
                         jsSteal("/templates/js/home.js", exchange);
+                    case "/js/challenges.js":
+                        jsSteal("/templates/js/challenges.js", exchange);
                     default:
                         break;
                 }
@@ -224,9 +217,13 @@ public class mainService {
             responseBody.close();
         }
         private static void handleGetBackground(HttpExchange exchange,String requestMethod,String path) throws IOException {
-        if (requestMethod.equalsIgnoreCase("GET")&path.equals("/picture/background"))
+        if (requestMethod.equalsIgnoreCase("GET"))
         {
-         imgSteal("./picture/background.jpg",exchange);
+           switch (path) {
+               case "/picture/background":
+                   imgSteal("/home/java/Desktop/nysec/src/main/resources/templates/picture/background.jpg",exchange);
+           }
+
         }
     }
         private static void imgSteal(String imgPath,HttpExchange exchange) throws IOException{
@@ -296,13 +293,9 @@ class dbUserUse {
         String dbName = "tianguyinsql";
         String host = "mysql.sqlpub.com:3306";
         String url = "jdbc:mysql://" + host + "/" + dbName;
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(url, userName, password);
-            return connection;
-        } catch (ClassNotFoundException | SQLException e) {
-            throw e; // 或者你可以返回 null，取决于你的实际需求
-        }
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        connection = DriverManager.getConnection(url, userName, password);
+        return connection;
     }
     public static String[] dbSearch(String sql) throws ClassNotFoundException, SQLException {
         Connection connection = dbConnect();
@@ -414,18 +407,18 @@ class keyWord {
 
     public String sqlUpdate = "UPDATE user SET ";
 
-    public String sqlExecuteUser = "INSERT INTO user (user_name,user_email,user_introduction,hash) VALUES (?,?,?,?,?)";
+    public String sqlExecuteUser = "INSERT INTO user (user_name,user_passwd,user_email,user_introduction,hash) VALUES (?,?,?,?,?)";
 
     public String sqlWhere = "WHERE hash = ";
 }
 class score{
-    public static void dbScoreInsert(String[] userInfo) throws SQLException, ClassNotFoundException {
+    public static void dbScoreInsert(String[] scoreInfo) throws SQLException, ClassNotFoundException {
         Connection connection = dbUserUse.dbConnect();
         String sql = "INSERT INTO score (hash,score,user_name) VALUES (?,?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,userInfo[0]);
-        preparedStatement.setString(2,userInfo[1]);
-        preparedStatement.setString(3,userInfo[2]);
+        preparedStatement.setString(1,scoreInfo[0]);
+        preparedStatement.setString(2,scoreInfo[1]);
+        preparedStatement.setString(3,scoreInfo[2]);
         preparedStatement.execute();
         preparedStatement.close();
         connection.close();
