@@ -291,3 +291,51 @@ body {
 .list:nth-child(even) {
     background-color: #f8f8f8;
 }
+.section {
+    flex: 1;
+    margin: 100px;
+    padding: 90px;
+    border: 1px solid #ccc;
+    border-radius: 100px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    aspect-ratio: 1/1.5; /* 确保正方形 */
+    overflow: hidden; /* 隐藏溢出内容 */
+    transition: transform 0.3s ease; /* 添加过渡效果 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #171a1d; /* 设置彩色字体 */
+    font-weight: 900;
+    font-size: 30px;
+}
+
+.section:hover {
+    transform: scale(1.05); /* 鼠标悬停时放大 */
+}
+.web-challenge {
+    width: 10vw; /* 屏幕宽度的 1/10 */
+    height: 10vw; /* 使宽高相同，以保持正方形 */
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* 隐藏溢出内容 */
+    transition: transform 0.3s ease; /* 添加过渡效果 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #171a1d; /* 设置彩色字体 */
+    font-weight: 900;
+    font-size: 30px;
+}
+
+.web-challenge:hover {
+    transform: scale(1.05);
+}
+
+
+
+

@@ -7,7 +7,6 @@ function loginOut() {
 window.onload = function() {
 
     var nameDisplay = document.getElementById("nameDiplay");
-    var scoreDisplay = document.getElementById("scoreDisplay");
     var scoreList = document.getElementById("Person-List");
 
     // 从 localStorage 中获取用户名，并更新页面上的用户名显示
@@ -40,7 +39,7 @@ window.onload = function() {
             })
             .then(data => {
                 // 处理从服务器接收到的 JSON 数据
-                console.log(data); // 输出接收到的数据到控制台
+                data.reverse();
 
                 // 将用户分数数据显示在页面上
                 data.forEach(user => {

@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NYSEC CTF</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/css/styles.css">
     <style id="parsed-css">
         body {
-            background-image: url('/picture/background');
+            background-image: url(https://api.sretna.cn/comic.php);
             background-size: cover; /* 让背景图片充满整个页面 */
-            background-position: center; /* 将背景图片居中 */
         }
     </style>
 </head>
@@ -40,7 +40,9 @@
             </li>
         </ul>
         <div>
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="border-radius: 50% ; height: 40px;width: 40px" onclick="toggleNav()"></button>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="border-radius: 50% ; height: 40px;width: 40px" onclick="toggleNav()">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </div>
 </nav>

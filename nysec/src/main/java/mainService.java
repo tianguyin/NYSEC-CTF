@@ -126,30 +126,6 @@ public class mainService {
             responseBody.write(jsonResponse.getBytes());
             responseBody.close();
         }
-        private static void handleUploadImage(HttpExchange exchange, String requestMethod, String path,String username) throws IOException {
-                if(requestMethod.equalsIgnoreCase("POST") && path.equals("/register/upload/picture/api")){
-                    try {
-                        String imgData = getRequestData(exchange);
-                        saveImage(username,imgData);
-                        sendResponse(exchange, 200, "Image uploaded successfully");
-                    } catch (Exception e) {
-                        sendResponse(exchange,404,"404 NOT FOUND");
-                    }
-                }
-        }
-        private static void saveImage(String username, String imgData) {
-                String uploadDir = "./userInputFile";
-                File directory = new File(uploadDir);
-                if(!directory.exists()){
-                    directory.mkdirs();
-                }
-                String path = uploadDir + File.separator + username + ".jpg";
-                try (OutputStream outputStream = new FileOutputStream(path)){
-                    outputStream.write(imgData.getBytes());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-        }
         private static void handlePOSTdata(HttpExchange exchange, String requestMethod,String path) throws IOException {
             if (requestMethod.equalsIgnoreCase("POST") && path.equals("/start")) {
                 String response = handlePostRequest(exchange);
@@ -227,6 +203,8 @@ public class mainService {
                         break;
                     case "/js/home.js":
                         jsSteal("/templates/js/home.js", exchange);
+                    case "/js/challenges.js":
+                        jsSteal("/templates/js/challenges.js", exchange);
                     default:
                         break;
                 }
@@ -239,9 +217,13 @@ public class mainService {
             responseBody.close();
         }
         private static void handleGetBackground(HttpExchange exchange,String requestMethod,String path) throws IOException {
-        if (requestMethod.equalsIgnoreCase("GET")&path.equals("/picture/background"))
+        if (requestMethod.equalsIgnoreCase("GET"))
         {
-         imgSteal("./picture/background.jpg",exchange);
+           switch (path) {
+               case "/picture/background":
+                   imgSteal("/home/java/Desktop/nysec/src/main/resources/templates/picture/background.jpg",exchange);
+           }
+
         }
     }
         private static void imgSteal(String imgPath,HttpExchange exchange) throws IOException{
