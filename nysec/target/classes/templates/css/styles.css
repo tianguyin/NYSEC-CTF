@@ -311,12 +311,11 @@ body {
 }
 
 .section:hover {
-    transform: scale(1.05); /* 鼠标悬停时放大 */
+    transform: scale(1.1); /* 鼠标悬停时放大 */
 }
-.web-challenge {
+.web-challenge-d{
     width: 10vw; /* 屏幕宽度的 1/10 */
     height: 10vw; /* 使宽高相同，以保持正方形 */
-    margin: 10px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -330,12 +329,102 @@ body {
     color: #171a1d; /* 设置彩色字体 */
     font-weight: 900;
     font-size: 30px;
+    margin-right: 50px;
 }
 
-.web-challenge:hover {
+.web-challenge-d:hover {
     transform: scale(1.05);
 }
+.web-challenge-f{
+    width: 10vw; /* 屏幕宽度的 1/10 */
+    height: 10vw; /* 使宽高相同，以保持正方形 */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* 隐藏溢出内容 */
+    transition: transform 0.3s ease; /* 添加过渡效果 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #171a1d; /* 设置彩色字体 */
+    font-weight: 900;
+    font-size: 30px;
+    background-color: rgb(240, 240, 240);
+    margin-right: 50px;
 
+}
 
+.web-challenge-f:hover {
+    transform: scale(1.05);
+}
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.showPopupButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
+#showPopupButton:hover {
+    background-color: #0056b3;
+}
+
+/* 弹窗遮罩层样式 */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色遮罩 */
+    z-index: 9998; /* 确保遮罩在弹窗下方 */
+}
+
+/* 弹窗容器样式 */
+#container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* 确保弹窗在最上层 */
+}
+
+/* 弹窗内容样式 */
+.popup-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    transition: transform 0.3s ease; /* 添加动画效果 */
+}
+
+.popup-content p {
+    margin-bottom: 10px;
+}
+
+.popup-content button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup-content button:hover {
+    background-color: #0056b3;
+}
 

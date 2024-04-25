@@ -40,7 +40,6 @@ window.onload = function() {
             .then(data => {
                 // 处理从服务器接收到的 JSON 数据
                 data.reverse();
-
                 // 将用户分数数据显示在页面上
                 data.forEach(user => {
                     var listItem = document.createElement('p');

@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -17,15 +18,16 @@ import java.util.*;
 public class mainService {
     public static void main(String[] args) throws IOException {
         // 创建 HTTP 服务器实例并监听端口 8080
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
         // 创建处理器，并将其与根路径关联
         server.createContext("/", new MyHandler());
         // 设置服务器的执行器为默认值
         server.setExecutor(null);
         // 启动服务器
         server.start();
+        InetAddress localHost = InetAddress.getLocalHost();
         // 打印服务器启动信息
-        System.out.println("Server is running on http://localhost:8080");
+        System.out.println("Server is running on http://" + localHost.getHostAddress());
     }
 
     // 自定义处理器类实现 HttpHandler 接口
@@ -46,12 +48,29 @@ public class mainService {
                 handleRegister(exchange, requestMethod, path);
                 handleLogin(exchange, requestMethod, path);
                 handleScoreSort(exchange,requestMethod,path);
+                handleWeb(exchange, requestMethod, path);
                 responseBody.close();
-            } catch (IOException | NoSuchAlgorithmException|SQLException | ClassNotFoundException e) {
-                sendResponse(exchange, 404, "404 Not Found: Page not found");
+            } catch (IOException | SQLException | ClassNotFoundException | NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
         }
+        }
+        private static void handleWeb(HttpExchange exchange, String requestMethod, String path) throws IOException, SQLException, ClassNotFoundException {
+           if (requestMethod.equalsIgnoreCase("POST") && path.equals("/web/api")) {
+            String response = getRequestData(exchange);
+            JSONObject responseObject = new JSONObject(response);
+            String email = responseObject.getString("email");
+            List<web.Info> webInfo = web.getInfo(email);
+            JSONArray jsonArray = new JSONArray();
+            for (web.Info info : webInfo) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("web",info.web);
+                jsonObject.put("id",info.id);
+                jsonArray.put(jsonObject);
+            }
+            String jsonResponse = jsonArray.toString();
+            sendJSONResponse(exchange, jsonResponse);
+            }
         }
         private static void handleScoreSort(HttpExchange exchange, String requestMethod, String path) throws IOException, SQLException, ClassNotFoundException {
             if (requestMethod.equalsIgnoreCase("POST") && path.equals("/data/common/scoredata/api")) {
@@ -65,7 +84,7 @@ public class mainService {
                     jsonArray.put(jsonObject);
                 }
                 String jsonResponse = jsonArray.toString();
-                sendJSONResponse(exchange,200,jsonResponse);
+                sendJSONResponse(exchange, jsonResponse);
             }
         }
         private static void handleRegister(HttpExchange exchange, String requestMethod, String path) throws IOException, NoSuchAlgorithmException {
@@ -110,7 +129,7 @@ public class mainService {
                     sendTOKEN.put("email", Info[1]);
                     sendTOKEN.put("introduction", Info[2]);
                     sendTOKEN.put("token",token);
-                    sendJSONResponse(exchange,200,sendTOKEN.toString());
+                    sendJSONResponse(exchange, sendTOKEN.toString());
                 } catch (ClassNotFoundException | SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -119,9 +138,9 @@ public class mainService {
             }
         }
         }
-        private static void sendJSONResponse(HttpExchange exchange, int statusCode, String jsonResponse) throws IOException {
+        private static void sendJSONResponse(HttpExchange exchange, String jsonResponse) throws IOException {
             exchange.getResponseHeaders().set("Content-Type", "application/json");
-            exchange.sendResponseHeaders(statusCode, jsonResponse.getBytes().length);
+            exchange.sendResponseHeaders(200, jsonResponse.getBytes().length);
             OutputStream responseBody = exchange.getResponseBody();
             responseBody.write(jsonResponse.getBytes());
             responseBody.close();
@@ -145,9 +164,7 @@ public class mainService {
         sendFileResponse(exchange, "/templates/" + page + ".html");
     }
         private static String handlePostRequest(HttpExchange exchange) throws IOException {
-        String requestBody = getRequestData(exchange);
-        sendResponse(exchange, 200, "Received POST data successfully");
-        return requestBody;
+            return getRequestData(exchange);
     }
         private static String getRequestData(HttpExchange exchange) throws IOException {
             // 从请求体中获取数据
@@ -205,6 +222,8 @@ public class mainService {
                         jsSteal("/templates/js/home.js", exchange);
                     case "/js/challenges.js":
                         jsSteal("/templates/js/challenges.js", exchange);
+                    case "/js/web.js":
+                        jsSteal("/templates/js/web.js", exchange);
                     default:
                         break;
                 }
@@ -410,6 +429,36 @@ class keyWord {
     public String sqlExecuteUser = "INSERT INTO user (user_name,user_passwd,user_email,user_introduction,hash) VALUES (?,?,?,?,?)";
 
     public String sqlWhere = "WHERE hash = ";
+}
+class web{
+    static class Info{
+        public String id;
+        public String web;
+        int score;
+        public Info(String id, String web) {
+            this.id = id;
+            this.web = web;
+        }
+    }
+
+    public static List<Info> getInfo(String email) throws SQLException, ClassNotFoundException {
+        List<Info> infoList = new ArrayList<>();
+        Connection  connection = dbUserUse.dbConnect();
+            // 准备并执行 SQL 查询
+        String sql = "SELECT * FROM " + "`" + email +"`";
+        PreparedStatement  preparedStatement = connection.prepareStatement(sql);
+        ResultSet  resultSet = preparedStatement.executeQuery();
+
+            // 处理查询结果
+        while (resultSet.next()) {
+                Info info = new Info(resultSet.getString("id"), resultSet.getString("web"));
+                infoList.add(info);
+        }
+
+        return infoList;
+    }
+
+
 }
 class score{
     public static void dbScoreInsert(String[] scoreInfo) throws SQLException, ClassNotFoundException {

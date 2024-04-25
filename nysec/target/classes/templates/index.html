@@ -8,9 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/css/styles.css">
     <style id="parsed-css">
-        body {
-            background-image: url(https://api.sretna.cn/comic.php);
-            background-size: cover; /* 让背景图片充满整个页面 */
+        body{
+            background-image: url(https://api.sretna.cn/layout/pc.php);
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
         }
     </style>
 </head>
@@ -18,7 +20,7 @@
 <div class="nav" id="nav">
     <ul>
         <li><a href="#">栏目1</a></li>
-        <li><a href="#">栏目2</a></li>
+        <li><a href="/">返回首页</a></li>
         <li><a href="#">栏目3</a></li>
         <li><a href="#">栏目4</a></li>
         <li><a href="#">栏目5</a></li>
@@ -48,8 +50,9 @@
 </nav>
 
 <main role="main" class="container" id="main-content">
-    <h1 class="nysec-title">NYSEC</h1>
-    <div style="height: auto"></div>
+    <video autoplay muted loop>
+        <source src="/video/nysec.mp4" type="video/mp4">
+    </video>
 </main>
 <script src="/js/styles.js"></script>
 <script src="/js/user.js"></script>
