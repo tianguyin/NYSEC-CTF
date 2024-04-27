@@ -5,14 +5,9 @@ function loginOut() {
     location.reload();
 }
 function showQuestionWindow(id,web){
+    // 创建遮罩层
     var overlay = document.createElement("div");
     overlay.id = "overlay";
-    overlay.onclick = overlayClick;
-    overlay.addEventListener("click", function() {
-        // 点击遮罩层时隐藏弹窗
-        document.body.removeChild(overlay);
-        document.body.removeChild(container);
-    });
     document.body.appendChild(overlay);
 
 // 创建容器
@@ -23,15 +18,22 @@ function showQuestionWindow(id,web){
     var popupContent = document.createElement("div");
     popupContent.classList.add("popup-content");
     popupContent.innerHTML = `
-    <p>这是一个弹窗</p>
+    <p>Web${id}</p>
+    <a id="closeButton">关闭</a>
 `;
     container.appendChild(popupContent);
-// 将容器添加到文档中
-    document.body.appendChild(container);
-}
-function overlayClick(){
+
+// 添加关闭按钮点击事件处理程序
+    var closeButton = popupContent.querySelector("#closeButton");
+    closeButton.addEventListener("click", function() {
+        // 隐藏弹窗
         document.body.removeChild(overlay);
         document.body.removeChild(container);
+    });
+
+// 将容器添加到文档中
+    document.body.appendChild(container);
+
 }
 window.onload = function() {
 
