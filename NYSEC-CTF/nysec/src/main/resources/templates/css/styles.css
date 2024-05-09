@@ -1,0 +1,430 @@
+
+body {
+    padding-top: 5rem;
+}
+
+.navbar {
+    background-color: #343a40;
+}
+
+.navbar-brand {
+    color: #fff !important;
+}
+
+.btn-group {
+    margin-bottom: 20px;
+}
+.nav {
+    position: fixed;
+    top: 0;
+    right: -250px; /* 初始状态右侧隐藏 */
+    width: 250px;
+    height: 100vh;
+    background: #333;
+    transition: right 0.3s ease;
+}
+
+.nav.active {
+    right: 0; /* 点击按钮后显示 */
+}
+
+.nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav ul li {
+    padding: 15px;
+    border-bottom: 1px solid #555;
+}
+
+.nav ul li:last-child {
+    border-bottom: none;
+}
+
+.nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.btn {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    background-color: transparent;
+    border: 2px solid #28a745; /* 边框颜色 */
+    outline: none; /* 点击时去掉默认边框 */
+}
+.nysec-title {
+    font-family: 'FangSong', cursive; /* 使用方正字体 */
+    font-size: 5rem; /* 设置字体大小 */
+    color: #f7f7f7; /* 设置字体颜色 */
+    text-align: center; /* 文字居中 */
+    margin-top: 100px; /* 设置顶部间距 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 添加文字阴影 */
+    -webkit-text-stroke: 1px black; /* 添加立体效果 */
+    text-stroke: 1px black; /* 添加立体效果 */
+}
+.login-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.login-container:hover {
+    transform: scale(1.05);
+}
+
+.login-title {
+    margin-bottom: 20px;
+    color: #007bff;
+    font-size: 24px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+.re-gister {
+    color: #ffffff;
+}
+.re-back {
+    color: #ffffff;
+}
+
+.btn-login {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: #0056b3;
+}
+.login-container {
+    background-color: #002752;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.login-container:hover {
+    transform: scale(1.05);
+}
+
+.login-title {
+    margin-bottom: 20px;
+    color: #f7f7f7;
+    font-size: 24px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.btn-login {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: #0056b3;
+}
+.register-container {
+    background-color: #002752; /* 深蓝色背景 */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+}
+
+.register-title {
+    margin-bottom: 20px;
+    color: #e0e0e0;
+    font-size: 24px;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* 将头像设置为圆形 */
+    margin-bottom: 20px;
+    margin-left: 100px;
+    overflow: hidden;
+    cursor: pointer; /* 添加指针样式 */
+    background-color: #ffffff;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar input[type="file"] {
+    display: none;
+}
+
+.avatar label {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: pointer; /* 添加指针样式 */
+    transition: background-color 0.3s ease;
+}
+
+.avatar label:hover {
+    background-color: #f0f0f0;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input,
+.input-group textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.btn-register {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-register:hover {
+    background-color: #0056b3;
+}
+.home {
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.home:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.home:nth-child(even) {
+    background-color: #f8f8f8;
+}
+.list {
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    cursor: pointer;
+}
+
+.list:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.list:nth-child(even) {
+    background-color: #f8f8f8;
+}
+.section {
+    flex: 1;
+    margin: 100px;
+    padding: 90px;
+    border: 1px solid #ccc;
+    border-radius: 100px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    aspect-ratio: 1/1.5; /* 确保正方形 */
+    overflow: hidden; /* 隐藏溢出内容 */
+    transition: transform 0.3s ease; /* 添加过渡效果 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #171a1d; /* 设置彩色字体 */
+    font-weight: 900;
+    font-size: 30px;
+}
+
+.section:hover {
+    transform: scale(1.1); /* 鼠标悬停时放大 */
+}
+.web-challenge-d{
+    width: 10vw; /* 屏幕宽度的 1/10 */
+    height: 10vw; /* 使宽高相同，以保持正方形 */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* 隐藏溢出内容 */
+    transition: transform 0.3s ease; /* 添加过渡效果 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #171a1d; /* 设置彩色字体 */
+    font-weight: 900;
+    font-size: 30px;
+    margin-right: 50px;
+}
+
+.web-challenge-d:hover {
+    transform: scale(1.05);
+}
+.web-challenge-f{
+    width: 10vw; /* 屏幕宽度的 1/10 */
+    height: 10vw; /* 使宽高相同，以保持正方形 */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* 隐藏溢出内容 */
+    transition: transform 0.3s ease; /* 添加过渡效果 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #171a1d; /* 设置彩色字体 */
+    font-weight: 900;
+    font-size: 30px;
+    background-color: rgb(240, 240, 240);
+    margin-right: 50px;
+
+}
+
+.web-challenge-f:hover {
+    transform: scale(1.05);
+}
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.showPopupButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#showPopupButton:hover {
+    background-color: #0056b3;
+}
+
+/* 弹窗遮罩层样式 */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色遮罩 */
+    z-index: 9998; /* 确保遮罩在弹窗下方 */
+}
+
+/* 弹窗容器样式 */
+#container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* 确保弹窗在最上层 */
+}
+
+/* 弹窗内容样式 */
+.popup-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    transition: transform 0.3s ease; /* 添加动画效果 */
+}
+
+.popup-content p {
+    margin-bottom: 10px;
+}
+
+.popup-content button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup-content button:hover {
+    background-color: #0056b3;
+}
+

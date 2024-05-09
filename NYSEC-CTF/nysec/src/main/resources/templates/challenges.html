@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYSEC CTF</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body{
+            background-image: url(https://api.sretna.cn/layout/pc.php);
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+<div class="nav" id="nav">
+    <ul>
+        <li><a href="#">栏目1</a></li>
+        <li><a href="/">返回首页</a></li>
+        <li><a href="#">栏目3</a></li>
+        <li><a href="#">栏目4</a></li>
+        <li><a href="#">栏目5</a></li>
+        <li><a id="mylogin" href="/login">登录</a></li>
+    </ul>
+</div>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top">
+    <a class="navbar-brand" href="/">NYSEC CTF</a>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/challenges">Challenges</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/link">Link</a>
+            </li>
+        </ul>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="border-radius: 50% ; height: 40px;width: 40px" onclick="toggleNav()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</nav>
+
+<main role="main" class="container" id="main-content" style="display: flex; flex-wrap: wrap;">
+
+    <a class="section" id="web" onclick="change('/web')" style="background-image: url(https://api.sretna.cn/comic.php);background-size: cover;background-position: center;">
+        Web
+    </a>
+    <a class="section" id="misc" onclick="change('/misc')" >
+        Misc
+    </a>
+    <a class="section" id="crypto" onclick="change('/crypto')" >
+        Crypto
+    </a>
+    <a class="section" id="reverse" onclick="change('/reverse')" >
+        Reverse
+    </a>
+    <a class="section" id="pwn" onclick="change('/pwn')" >
+        Pwn
+    </a>
+    <a class="section" id="awd" onclick="change('/awd')" >
+        Awd
+    </a>
+    <a class="section" id="penetration" onclick="change('/penetration')" >
+        渗透测试
+    </a>
+    <a class="section" id="iot" onclick="change('/iot')" >
+        IOT
+    </a>
+</main>
+<script src="/js/challenges.js"></script>
+<script src="/js/styles.js"></script>
+<script src="/js/user.js"></script>
+</body>
+</html>

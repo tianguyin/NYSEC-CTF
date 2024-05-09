@@ -1,0 +1,67 @@
+<!-- about.html -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYSEC CTF</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="nav" id="nav">
+    <ul>
+        <li><a href="#">栏目1</a></li>
+        <li><a href="/">返回首页</a></li>
+        <li><a href="#">栏目3</a></li>
+        <li><a href="#">栏目4</a></li>
+        <li><a href="#">栏目5</a></li>
+        <li ><a id="mylogin" href="/login">登录</a></li>
+    </ul>
+</div>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top">
+    <a class="navbar-brand" href="/">NYSEC CTF</a>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/challenges">Challenges</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/link">Link</a>
+            </li>
+        </ul>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="border-radius: 50% ; height: 40px;width: 40px" onclick="toggleNav()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</nav>
+
+<main role="main" class="container" id="main-content">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>About NYSEC CTF</h2>
+                <p>NYSEC CTF is an annual Capture The Flag (CTF) competition organized by the New York Security Enthusiasts Club. Our mission is to promote cybersecurity education and provide a platform for enthusiasts to hone their skills through hands-on challenges.</p>
+                <p>Our CTF features a wide range of challenges covering various domains including web security, cryptography, reverse engineering, and more. Whether you're a beginner or an experienced hacker, there's something for everyone at NYSEC CTF!</p>
+            </div>
+            <div class="col-md-6">
+                <img src="ctf_image.jpg" class="img-fluid" alt="NYSEC CTF">
+            </div>
+        </div>
+    </div>
+
+
+</main>
+<script src="/js/styles.js"></script>
+<script src="/js/user.js"></script>
+</body>
+</html>
+
