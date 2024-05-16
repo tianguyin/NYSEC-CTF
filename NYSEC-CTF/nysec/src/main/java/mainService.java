@@ -10,7 +10,9 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.*;
@@ -40,6 +42,7 @@ public class mainService {
                 // 获取响应体输出流和响应头部
                 OutputStream responseBody = exchange.getResponseBody();
                 Headers responseHeaders = exchange.getResponseHeaders();
+                handleGetAvatar(exchange,requestMethod,path);
                 handleGetBackground(exchange, requestMethod, path);
                 handleGetcss(exchange, requestMethod, path);
                 handleGetjs(exchange, requestMethod, path);
@@ -52,6 +55,15 @@ public class mainService {
                 responseBody.close();
             } catch (IOException | SQLException | ClassNotFoundException | NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
+            }
+        }
+        }
+        private static void handleGetAvatar(HttpExchange exchange, String requestMethod, String path) throws IOException {
+        boolean TRY = RegexExample.regexExample(path);
+        if (TRY) {
+            if (requestMethod.equalsIgnoreCase("GET")) {
+                String Dir = "src/main/resources/templates/userInputFile" + path + ".jpg";
+                imgSteal(Dir, exchange);
             }
         }
         }
@@ -220,10 +232,16 @@ public class mainService {
                         break;
                     case "/js/home.js":
                         jsSteal("/templates/js/home.js", exchange);
+                        break;
                     case "/js/challenges.js":
                         jsSteal("/templates/js/challenges.js", exchange);
+                        break;
                     case "/js/web.js":
                         jsSteal("/templates/js/web.js", exchange);
+                        break;
+                    case "/js/personHome.js":
+                        jsSteal("/templates/js/personHome.js", exchange);
+                        break;
                     default:
                         break;
                 }
@@ -240,22 +258,42 @@ public class mainService {
         {
            switch (path) {
                case "/picture/background":
-                   imgSteal("/home/java/Desktop/nysec/src/main/resources/templates/picture/background.jpg",exchange);
+                   imgSteal("src/main/resources/templates/picture/background.jpg",exchange);
+                   break;
            }
 
         }
     }
-        private static void imgSteal(String imgPath,HttpExchange exchange) throws IOException{
+        private static void imgSteal(String imgPath, HttpExchange exchange) throws IOException {
+            // 读取图片
             BufferedImage image = ImageIO.read(new File(imgPath));
+
+            // 获取图片文件的后缀名（扩展名）
+            String fileExtension = getFileExtension(imgPath);
+
+            // 将图片写入 ByteArrayOutputStream，保持原始格式
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ImageIO.write(image, "jpg", outputStream);
+            ImageIO.write(image, fileExtension, outputStream);
             byte[] imageBytes = outputStream.toByteArray();
-            // 设置响应头部
-            exchange.getResponseHeaders().set("Content-Type", "image/jpeg");
+
+            // 设置响应头部为原始图片格式
+            String contentType = "image/" + fileExtension; // 直接使用文件扩展名确定 Content-Type
+            exchange.getResponseHeaders().set("Content-Type", contentType);
+
             // 发送响应
             exchange.sendResponseHeaders(200, imageBytes.length);
             OutputStream responseBody = exchange.getResponseBody();
             responseBody.write(imageBytes);
+        }
+        // 获取文件扩展名
+        private static String getFileExtension(String filePath) {
+            Path path = Paths.get(filePath);
+            String fileName = path.getFileName().toString();
+            int dotIndex = fileName.lastIndexOf('.');
+            if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+                return fileName.substring(dotIndex + 1).toLowerCase();
+            }
+            return ""; // 如果找不到扩展名，则返回空字符串
         }
         private static void cssSteal(String path,HttpExchange exchange) throws IOException {
         Headers responseHeaders = exchange.getResponseHeaders();
@@ -287,221 +325,3 @@ public class mainService {
     }
 }
 
-class dbUserUse {
-
-    public static void dbExecute(String sql,String[] userInfo) throws SQLException, ClassNotFoundException {
-        Connection connection = dbConnect();
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,userInfo[0]);
-            preparedStatement.setString(2,userInfo[1]);
-            preparedStatement.setString(3,userInfo[2]);
-            preparedStatement.setString(4,userInfo[3]);
-            preparedStatement.setString(5,userInfo[4]);
-            preparedStatement.execute();
-            preparedStatement.close();
-            connection.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public static Connection dbConnect() throws ClassNotFoundException, SQLException {
-        Connection connection;
-        String userName = "tianguyin";
-        String password = "BaSFYE7VpUhPmazr";
-        String dbName = "tianguyinsql";
-        String host = "mysql.sqlpub.com:3306";
-        String url = "jdbc:mysql://" + host + "/" + dbName;
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        connection = DriverManager.getConnection(url, userName, password);
-        return connection;
-    }
-    public static String[] dbSearch(String sql) throws ClassNotFoundException, SQLException {
-        Connection connection = dbConnect();
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        String[] dbRow = null;
-        if (resultSet.next()) {
-            dbRow = new String[]{
-                    resultSet.getString("user_name"),
-                    resultSet.getString("user_email"),
-                    resultSet.getString("user_introduction"),
-                    resultSet.getString("hash")
-            };
-        }
-
-        // 关闭资源
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
-
-        return dbRow;
-    }
-    public static void dbRevise(String sql, String newValue) throws SQLException, ClassNotFoundException {
-        try (Connection connection = dbConnect()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, newValue);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-
-    }
-}
-class enCryption {
-    public static String hash(String password) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(password.getBytes());
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : hash) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) hexString.append('0');
-            hexString.append(hex);
-        }
-
-        return hexString.toString();
-    }
-    public static StringBuilder salt(String token, String salt) throws NoSuchAlgorithmException {
-        int numParts = salt.length();
-        int tokenLength = token.length();
-        String[] parts = new String[numParts];
-        int spliteParts = tokenLength / numParts;
-        StringBuilder entoken = new StringBuilder();
-        for (int i = 0; i < numParts; i++) {
-            int startIndex = i * spliteParts;
-            int endIndex = (i == numParts - 1) ? token.length() : (i + 1) * spliteParts;
-            parts[i] = token.substring(startIndex, endIndex);
-        }
-        for (int i = 0; i < parts.length; i++) {
-            entoken.append(parts[i]).append(salt);
-
-        }
-        // 打印切分后的部分
-        return entoken;
-    }
-    public static StringBuilder unsalt(String token,String salt) throws NoSuchAlgorithmException {
-        int numParts = salt.length();
-        int tokenLength = token.length();
-        String[] parts = new String[numParts];
-        int spliteParts = tokenLength / numParts;
-        StringBuilder untoken = new StringBuilder();
-        for (int i = 0; i < numParts; i++) {
-            int startIndex = i * spliteParts;
-            int endIndex = (i == numParts - 1) ? token.length() : (i + 1) * spliteParts;
-            parts[i] = token.substring(startIndex, endIndex);
-        }
-        for (int i = 0; i < parts.length; i++) {
-            untoken.append(parts[i]);
-            untoken.delete(untoken.length()-numParts, untoken.length());
-        }
-
-        return untoken;
-    }
-    public static String token(String[] Info) {
-        StringBuilder tokenBuilder = new StringBuilder();
-        for (int i = 0; i < Info.length; i++) {
-            String part = Base64.getEncoder().encodeToString(Info[i].getBytes(StandardCharsets.UTF_8));
-            tokenBuilder.append(part);
-            if (i < Info.length - 1) {
-                tokenBuilder.append(",");
-            }
-        }
-        return tokenBuilder.toString();
-    }
-}
-class keyWord {
-    public String uuid = "uuid";
-
-    public String name = "user_name";
-
-    public String passwd = "user_passwd";
-
-    public String salt = "salt";
-
-    public String email = "user_email";
-
-    public String sqlSearchAllUser = "SELECT * FROM user ";
-
-    public String sqlUpdate = "UPDATE user SET ";
-
-    public String sqlExecuteUser = "INSERT INTO user (user_name,user_passwd,user_email,user_introduction,hash) VALUES (?,?,?,?,?)";
-
-    public String sqlWhere = "WHERE hash = ";
-}
-class web{
-    static class Info{
-        public String id;
-        public String web;
-        int score;
-        public Info(String id, String web) {
-            this.id = id;
-            this.web = web;
-        }
-    }
-
-    public static List<Info> getInfo(String email) throws SQLException, ClassNotFoundException {
-        List<Info> infoList = new ArrayList<>();
-        Connection  connection = dbUserUse.dbConnect();
-            // 准备并执行 SQL 查询
-        String sql = "SELECT * FROM " + "`" + email +"`";
-        PreparedStatement  preparedStatement = connection.prepareStatement(sql);
-        ResultSet  resultSet = preparedStatement.executeQuery();
-
-            // 处理查询结果
-        while (resultSet.next()) {
-                Info info = new Info(resultSet.getString("id"), resultSet.getString("web"));
-                infoList.add(info);
-        }
-
-        return infoList;
-    }
-
-
-}
-class score{
-    public static void dbScoreInsert(String[] scoreInfo) throws SQLException, ClassNotFoundException {
-        Connection connection = dbUserUse.dbConnect();
-        String sql = "INSERT INTO score (hash,score,user_name) VALUES (?,?,?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1,scoreInfo[0]);
-        preparedStatement.setString(2,scoreInfo[1]);
-        preparedStatement.setString(3,scoreInfo[2]);
-        preparedStatement.execute();
-        preparedStatement.close();
-        connection.close();
-    }
-    public static void dbScoreUpdate(int score,String keyWord) throws SQLException, ClassNotFoundException {
-        Connection connection = dbUserUse.dbConnect();
-        String sql = "UPDATE score SET score = ? WHERE hash = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setInt(1,score);
-        preparedStatement.executeUpdate();
-        preparedStatement.close();
-    }
-}
-class sort{
-    static class Info{
-    public String comfireHash;
-    public String username;
-    int score;
-    public Info(String comfire_Hash, String username,int score) {
-        this.comfireHash = comfire_Hash;
-        this.username = username;
-        this.score = score;
-    }
-    }
-
-    public static List<Info> getInfo() throws SQLException, ClassNotFoundException {
-        List<Info> infoList = new ArrayList<>();
-        Connection connection = dbUserUse.dbConnect();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM score");
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            Info info = new Info(resultSet.getString("hash"),resultSet.getString("user_name"),resultSet.getInt("score"));
-            infoList.add(info);
-        }
-        return infoList;
-    }
-}

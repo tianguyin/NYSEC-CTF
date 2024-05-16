@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title"></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="po" id="pop">
+    <span class="close-button" onclick="reactive()">×</span>
+</div>
+<div class="nav" id="nav">
+    <ul>
+        <li><a href="#">栏目1</a></li>
+        <li><a href="/">返回首页</a></li>
+        <li><a href="/personHome">个人主页</a></li>
+        <li><a href="#">题目投稿</a></li>
+        <li><a href="#">商城</a></li>
+        <li id><a id="mylogin" href="/login">登录</a></li>
+    </ul>
+</div>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top">
+    <a class="navbar-brand" href="/" >NYSEC CTF</a>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/challenges">Challenges</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/link">Link</a>
+            </li>
+        </ul>
+        <div>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="border-radius: 50% ; height: 40px;width: 40px" onclick="toggleNav()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+<header>
+    <div>
+        <p>
+            <img id="avatar" class="avatar" onclick="pop('avatar')" alt="头像">
+        </p>
+        <p id="name"></p>
+    </div>
+    <div>
+        <h1 id="Credentials Wall" ></h1>
+    </div>
+</header>
+
+<main>
+    <section class="about">
+        <div>
+            <h2>About Me</h2>
+            <p id="introductionContent" class="introductionContent" onclick="pop('introductionContent')"></p>
+        </div>
+    </section>
+
+    <section class="portfolio">
+        <div class="container">
+            <h2>World</h2>
+            <div class="portfolio-grid">
+                <div class="portfolio-item" onclick="pop('competitions')">
+                    <h3>Joined Competitions</h3>
+                    <p>Description of Project 1.</p>
+                </div>
+                <div class="portfolio-item" onclick="pop('wp')">
+                    <h3>Write Up</h3>
+                    <p>Description of Project 2.</p>
+                </div>
+                <div class="portfolio-item" onclick="pop('hw')">
+                    <h3>Honor Wall</h3>
+                    <p>Description of Project 3.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2024 My Dynamic Homepage</p>
+    </div>
+</footer>
+<script src="/js/personHome.js"></script>
+</body>
+</html>

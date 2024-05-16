@@ -4,8 +4,14 @@ function loginOut() {
     localStorage.clear();
     location.reload();
 }
+function logout() {
+    if (document.cookie.length<1) {
+        localStorage.clear();
+    }
+}
 
 window.onload = function () {
+    logout();
     var cookies = document.cookie;
     var check = document.getElementById("mylogin");
     if (cookies.length>0 && cookies.startsWith("token=")){

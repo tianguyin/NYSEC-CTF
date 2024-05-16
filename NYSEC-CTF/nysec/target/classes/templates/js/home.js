@@ -4,8 +4,13 @@ function loginOut() {
     localStorage.clear();
     location.reload();
 }
+function logout() {
+    if (document.cookie.length<1) {
+        localStorage.clear();
+    }
+}
 window.onload = function() {
-
+    logout();
     var nameDisplay = document.getElementById("nameDiplay");
     var scoreList = document.getElementById("Person-List");
 

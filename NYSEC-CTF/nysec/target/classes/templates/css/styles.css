@@ -64,7 +64,6 @@ body {
     margin-top: 100px; /* 设置顶部间距 */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 添加文字阴影 */
     -webkit-text-stroke: 1px black; /* 添加立体效果 */
-    text-stroke: 1px black; /* 添加立体效果 */
 }
 .login-container {
     background-color: #fff;
@@ -256,7 +255,7 @@ body {
     padding: 15px;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
@@ -266,7 +265,7 @@ body {
 
 .home:hover {
     transform: translateY(-3px);
-    box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 
 .home:nth-child(even) {
@@ -276,7 +275,7 @@ body {
     padding: 15px;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
@@ -285,7 +284,7 @@ body {
 
 .list:hover {
     transform: translateY(-3px);
-    box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 
 .list:nth-child(even) {
@@ -427,4 +426,159 @@ body {
 .popup-content button:hover {
     background-color: #0056b3;
 }
+header {
+    text-align: center;
+    padding: 80px 0;
+}
 
+header h1 {
+    font-size: 48px;
+}
+
+header p {
+    font-size: 18px;
+    color: #666;
+}
+
+main {
+    padding: 40px 0;
+}
+
+section {
+    padding: 40px 0;
+}
+
+section h2 {
+    font-size: 36px;
+    text-align: center;
+}
+
+section p {
+    font-size: 16px;
+    text-align: center;
+}
+.introductionContent {
+    cursor: pointer;
+    display: block; /* 将图片元素转换为块级元素，以便使用 margin: 0 auto; 居中 */
+    margin: 0 auto; /* 使用 margin 属性将图片水平居中 */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    /* 使用百分比来设置宽度，同时设置最大宽度 */
+    width: 100%; /* 初始宽度为100% */
+    max-width: 400px; /* 最大宽度为400像素，避免过度扩展 */
+}
+.introductionContent:hover {
+    transform: scale(1.05);
+}
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.portfolio-item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.portfolio-item:hover {
+    transform: translateY(-10px);
+}
+
+.portfolio-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #333;
+    color: #fff;
+}
+.avatar {
+    cursor: pointer;
+    display: block; /* 将图片元素转换为块级元素，以便使用 margin: 0 auto; 居中 */
+    margin: 0 auto; /* 使用 margin 属性将图片水平居中 */
+    width: 200px; /* 设置最大宽度为200像素，图片会根据比例自动调整 */
+    height: 200px; /* 高度自适应，保持原始宽高比 */
+    transition: transform 0.3s ease; /* 添加过渡效果，使放大效果更流畅 */
+}
+
+.avatar:hover {
+    transform: scale(1.2); /* 鼠标悬停时放大至原始大小的1.2倍 */
+}
+/* 弹出窗口样式 */
+.po {
+    position: fixed;
+    top: 50%; /* 垂直居中 */
+    left: 50%; /* 水平居中 */
+    transform: translate(-50%, -50%);
+    width: 70%; /* 设置宽度 */
+    max-width: 400px; /* 最大宽度 */
+    padding: 20px;
+    background: #f8f9fa; /* 背景色 */
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* 添加阴影 */
+    z-index: 9999;
+    display: none; /* 初始隐藏 */
+}
+
+/* 激活状态下显示 */
+.po.active {
+    display: block;
+}
+
+/* 关闭按钮样式 */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #888;
+}
+
+/* 文件上传部分样式 */
+.uploadIcon {
+    font-size: 10vh;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+.uploadDiv {
+    width: auto;
+    height: 37vh;
+    text-align: center; /* 内部文本居中 */
+}
+
+.uploadText {
+    font-size: 16vh;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.submitButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    margin-right: 10vh;
+}
+
+.submitButton:hover {
+    background-color: #0056b3;
+}
+
+input[type="file"] {
+    display: none; /* 隐藏原生文件选择框 */
+}
