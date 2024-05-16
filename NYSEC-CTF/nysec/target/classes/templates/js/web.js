@@ -1,4 +1,4 @@
-<<<<<<< HEAD:nysec/src/main/resources/templates/js/web.js
+
 function loginOut() {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
     sessionStorage.clear();
@@ -97,7 +97,7 @@ window.onload = function() {
 
     }
 }
-=======
+
 function loginOut() {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
     sessionStorage.clear();
@@ -191,4 +191,4 @@ window.onload = function() {
 
     }
 }
->>>>>>> d763010be3b17db761778a41693065e356ab04eb:NYSEC-CTF/nysec/src/main/resources/templates/js/web.js
+

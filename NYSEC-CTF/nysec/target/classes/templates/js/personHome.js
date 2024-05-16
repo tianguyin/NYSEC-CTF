@@ -80,7 +80,43 @@ function logout() {
     }
 }
 function uploadAvatar(){
-    alert('1111');
+    const fileInput = document.getElementById('avatarFile');
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+            const imageData = event.target.result; // 获取文件的Base64数据
+            sendBase64Image(imageData);
+        };
+
+        reader.readAsDataURL(file); // 读取文件并将其转换为Base64
+    } else {
+        console.error('请选择要上传的图片文件！');
+    }
+}
+function sendBase64Image(base64Image) {
+    var email = localStorage.getItem('email');
+    var url = '/'+email+'/avatar/api';
+    // 发送 HTTP POST 请求到后端接口
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ image: base64Image })
+    })
+        .then(response => {
+            if (response.ok) {
+                alert("上传成功");
+                window.location.reload();
+            } else {
+                console.error('Failed to upload image');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 }
 function Info(){
     var username = localStorage.getItem('username');

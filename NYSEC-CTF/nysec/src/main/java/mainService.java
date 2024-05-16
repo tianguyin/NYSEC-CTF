@@ -16,9 +16,12 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class mainService {
+    private static final Logger logger = Logger.getLogger(mainService.class.getName());
     public static void main(String[] args) throws IOException {
+        logger.info("Server is starting...");
         // 创建 HTTP 服务器实例并监听端口 80
         HttpServer server = HttpServer.create(new InetSocketAddress(81), 0);
         // 创建处理器，并将其与根路径关联
@@ -29,7 +32,7 @@ public class mainService {
         server.start();
         InetAddress localHost = InetAddress.getLocalHost();
         // 打印服务器启动信息
-        System.out.println("Server is running on http://" + localHost.getHostAddress()+":81");
+        logger.info("Server is running on http://" + localHost.getHostAddress() + ":81");
     }
 
     // 自定义处理器类实现 HttpHandler 接口
@@ -43,6 +46,7 @@ public class mainService {
                 OutputStream responseBody = exchange.getResponseBody();
                 Headers responseHeaders = exchange.getResponseHeaders();
                 handleGetAvatar(exchange,requestMethod,path);
+                avatarSave(exchange,requestMethod,path);
                 handleGetBackground(exchange, requestMethod, path);
                 handleGetcss(exchange, requestMethod, path);
                 handleGetjs(exchange, requestMethod, path);
@@ -54,19 +58,25 @@ public class mainService {
                 handleWeb(exchange, requestMethod, path);
                 responseBody.close();
             } catch (IOException | SQLException | ClassNotFoundException | NoSuchAlgorithmException e) {
+                logger.severe("Exception occurred: " + e.getMessage());
                 throw new RuntimeException(e);
             }
         }
         }
         private static void handleGetAvatar(HttpExchange exchange, String requestMethod, String path) throws IOException {
-        boolean TRY = RegexExample.regexExample(path);
-        if (TRY) {
-            if (requestMethod.equalsIgnoreCase("GET")) {
-                String Dir = "src/main/resources/templates/userInputFile" + path + ".jpg";
-                imgSteal(Dir, exchange);
+            boolean isValidPath = RegexExample.regexExample(path);
+            if (isValidPath) {
+                if (requestMethod.equalsIgnoreCase("GET")) {
+                    String imagePath = "/templates/userInputFile" + path + ".jpg";
+                    logger.info("Handling GET request for image: " + imagePath);
+                    imgSteal(imagePath, exchange);
+                } else {
+                    logger.warning("Invalid request method for avatar retrieval: " + requestMethod);
+                }
+            } else {
+                logger.warning("Invalid path format for avatar: " + path);
             }
-        }
-        }
+    }
         private static void handleWeb(HttpExchange exchange, String requestMethod, String path) throws IOException, SQLException, ClassNotFoundException {
            if (requestMethod.equalsIgnoreCase("POST") && path.equals("/web/api")) {
             String response = getRequestData(exchange);
@@ -115,14 +125,13 @@ public class mainService {
                     dbUserUse.dbExecute(keyWord.sqlExecuteUser, userInfo);
                     String[] scoreInfo = {comfiremHash, String.valueOf(0),username};
                     score.dbScoreInsert(scoreInfo);
-                } catch (IOException | NoSuchAlgorithmException | SQLException |
-                         ClassNotFoundException e) {
+                } catch (IOException | NoSuchAlgorithmException | SQLException | ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
         private static void handleLogin(HttpExchange exchange, String requestMethod, String path) throws IOException, NoSuchAlgorithmException {
-            keyWord keyWord = new keyWord();
+        keyWord keyWord = new keyWord();
         if(requestMethod.equalsIgnoreCase("POST") && path.equals("/login/api")){
             try {
                 String response = getRequestData(exchange);
@@ -258,33 +267,38 @@ public class mainService {
         {
            switch (path) {
                case "/picture/background":
-                   imgSteal("src/main/resources/templates/picture/background.jpg",exchange);
+                   imgSteal("templates/picture/background.jpg",exchange);
                    break;
            }
 
         }
     }
         private static void imgSteal(String imgPath, HttpExchange exchange) throws IOException {
-            // 读取图片
-            BufferedImage image = ImageIO.read(new File(imgPath));
+        // 使用 getResourceAsStream 获取资源文件流
+        InputStream inputStream = mainService.class.getResourceAsStream(imgPath);
+        if (inputStream == null) {
+            throw new IOException("Image not found: " + imgPath);
+        }
 
-            // 获取图片文件的后缀名（扩展名）
+        try (InputStream imageStream = inputStream) {
+            BufferedImage image = ImageIO.read(imageStream);
             String fileExtension = getFileExtension(imgPath);
 
-            // 将图片写入 ByteArrayOutputStream，保持原始格式
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ImageIO.write(image, fileExtension, outputStream);
             byte[] imageBytes = outputStream.toByteArray();
 
-            // 设置响应头部为原始图片格式
-            String contentType = "image/" + fileExtension; // 直接使用文件扩展名确定 Content-Type
+            String contentType = "image/" + fileExtension;
             exchange.getResponseHeaders().set("Content-Type", contentType);
 
-            // 发送响应
             exchange.sendResponseHeaders(200, imageBytes.length);
-            OutputStream responseBody = exchange.getResponseBody();
-            responseBody.write(imageBytes);
+            try (OutputStream responseBody = exchange.getResponseBody()) {
+                responseBody.write(imageBytes);
+            }
+        } catch (IOException e) {
+            throw new IOException("Error reading image: " + imgPath, e);
         }
+    }
         // 获取文件扩展名
         private static String getFileExtension(String filePath) {
             Path path = Paths.get(filePath);
@@ -322,6 +336,38 @@ public class mainService {
             responseBody.write(buffer, 0, bytesRead);
         }
         responseBody.close();
+    }
+        private static void avatarSave(HttpExchange exchange,String requestMethod,String path) throws IOException {
+        boolean pass = RegexExample.regexApi(path);
+        try {
+            if (pass) {
+                path = path.substring(0, path.length() - 4);
+                if (requestMethod.equalsIgnoreCase("POST")) {
+                    InputStreamReader inputStream = new InputStreamReader(exchange.getRequestBody());
+                    BufferedReader bufferedReader = new BufferedReader(inputStream);
+                    String body = bufferedReader.readLine();
+                    JSONObject jsonObject = new JSONObject(body);
+                    String avatar = jsonObject.getString("image");
+                    byte[] imageBytes = Base64.getDecoder().decode(avatar.split(",")[1]);
+                    String Dir = "nysec/src/main/resources/templates/userInputFile" + path + ".jpg";
+//                    String Dir = "nysec/src/main/resources/templates/picture/avatar.jpg";
+                    Path imgPath = Paths.get(Dir);
+                    Files.write(imgPath, imageBytes);
+                    exchange.sendResponseHeaders(200, 0);
+                    OutputStream responseBody = exchange.getResponseBody();
+                    logger.severe("Image uploaded successfully");
+                    responseBody.close();
+                } else {
+                    exchange.sendResponseHeaders(405, 0);
+                    OutputStream responseBody = exchange.getResponseBody();
+                    responseBody.write("Method Not Allowed".getBytes());
+                    responseBody.close();
+                }
+            }
+        }
+        catch (Exception e) {
+            logger.warning(e.getMessage());
+        }
     }
 }
 
