@@ -18,12 +18,13 @@ public class dbUserUse {
             throw new RuntimeException(e);
         }
     }
+
     public static Connection dbConnect() throws ClassNotFoundException, SQLException {
         Connection connection;
-        String userName = "tianguyin";
-        String password = "BaSFYE7VpUhPmazr";
-        String dbName = "tianguyinsql";
-        String host = "mysql.sqlpub.com:3306";
+        String userName = "root";
+        String password = "123456";
+        String dbName = "nysec_db";
+        String host = "127.0.0.1:3306";
         String url = "jdbc:mysql://" + host + "/" + dbName;
         Class.forName("com.mysql.cj.jdbc.Driver");
         connection = DriverManager.getConnection(url, userName, password);

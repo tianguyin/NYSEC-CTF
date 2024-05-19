@@ -16,14 +16,20 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class mainService {
     private static final Logger logger = Logger.getLogger(mainService.class.getName());
+    public static final Cache<String, byte[]> cache = new Cache<>(100);
+
     public static void main(String[] args) throws IOException {
         logger.info("Server is starting...");
         // 创建 HTTP 服务器实例并监听端口 80
-        HttpServer server = HttpServer.create(new InetSocketAddress(81), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
         // 创建处理器，并将其与根路径关联
         server.createContext("/", new MyHandler());
         // 设置服务器的执行器为默认值
@@ -32,50 +38,68 @@ public class mainService {
         server.start();
         InetAddress localHost = InetAddress.getLocalHost();
         // 打印服务器启动信息
-        logger.info("Server is running on http://" + localHost.getHostAddress() + ":81");
+        logger.info("Server is running on http://" + localHost.getHostAddress() + ":80");
+
+        // 启动定时任务，每隔 10 分钟清空一次缓存
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(() -> {
+            logger.info("Clearing cache...");
+            cache.clear();
+        }, 10, 10, TimeUnit.MINUTES);
     }
 
     // 自定义处理器类实现 HttpHandler 接口
     static class MyHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            try {// 获取请求方法和路径
-                String requestMethod = exchange.getRequestMethod();
-                String path = exchange.getRequestURI().getPath();
-                // 获取响应体输出流和响应头部
-                OutputStream responseBody = exchange.getResponseBody();
-                Headers responseHeaders = exchange.getResponseHeaders();
-                handleGetAvatar(exchange,requestMethod,path);
-                avatarSave(exchange,requestMethod,path);
-                handleGetBackground(exchange, requestMethod, path);
-                handleGetcss(exchange, requestMethod, path);
-                handleGetjs(exchange, requestMethod, path);
-                handleGetIndex(exchange, requestMethod, path);
-                handlePOSTdata(exchange, requestMethod, path);
-                handleRegister(exchange, requestMethod, path);
-                handleLogin(exchange, requestMethod, path);
-                handleScoreSort(exchange,requestMethod,path);
-                handleWeb(exchange, requestMethod, path);
-                responseBody.close();
-            } catch (IOException | SQLException | ClassNotFoundException | NoSuchAlgorithmException e) {
-                logger.severe("Exception occurred: " + e.getMessage());
-                throw new RuntimeException(e);
-            }
+        private static final ExecutorService executorService = Executors.newFixedThreadPool(10); // 创建一个包含 10 个线程的线程池
+
+        public void handle(HttpExchange exchange) {
+            // 将请求分配给线程池处理
+            executorService.submit(() -> {
+                try {
+                    // 获取请求方法和路径
+                    String requestMethod = exchange.getRequestMethod();
+                    String path = exchange.getRequestURI().getPath();
+                    // 获取响应体输出流和响应头部
+                    OutputStream responseBody = exchange.getResponseBody();
+                    Headers responseHeaders = exchange.getResponseHeaders();
+
+                    handleGetAvatar(exchange, requestMethod, path);
+                    avatarSave(exchange, requestMethod, path);
+                    handleGetBackground(exchange, requestMethod, path);
+                    handleGetcss(exchange, requestMethod, path);
+                    handleGetjs(exchange, requestMethod, path);
+                    handleGetIndex(exchange, requestMethod, path);
+                    handlePOSTdata(exchange, requestMethod, path);
+                    handleRegister(exchange, requestMethod, path);
+                    handleLogin(exchange, requestMethod, path);
+                    handleScoreSort(exchange, requestMethod, path);
+                    handleWeb(exchange, requestMethod, path);
+
+                    responseBody.close();
+                } catch (IOException | SQLException | ClassNotFoundException | NoSuchAlgorithmException e) {
+                    logger.severe("Exception occurred: " + e.getMessage());
+                    throw new RuntimeException(e);
+                }
+            });
         }
         }
         private static void handleGetAvatar(HttpExchange exchange, String requestMethod, String path) throws IOException {
-            boolean isValidPath = RegexExample.regexExample(path);
-            if (isValidPath) {
-                if (requestMethod.equalsIgnoreCase("GET")) {
-                    String imagePath = "/templates/userInputFile" + path + ".jpg";
-                    logger.info("Handling GET request for image: " + imagePath);
-                    imgSteal(imagePath, exchange);
-                } else {
-                    logger.warning("Invalid request method for avatar retrieval: " + requestMethod);
+        boolean isValidPath = RegexExample.regexExample(path);
+        if (isValidPath) {
+            if (requestMethod.equalsIgnoreCase("GET")) {
+                String imagePath = "nysec/src/main/resources/templates/userInputFile" + path + ".jpg";
+                logger.info("Handling GET request for image: " + imagePath);
+
+                // 检查目录是否存在，如果不存在则创建
+                Path directoryPath = Paths.get(imagePath).getParent();
+                if (!Files.exists(directoryPath)) {
+                    Files.createDirectories(directoryPath);
+                    logger.info("Created directory: " + directoryPath.toString());
                 }
-            } else {
-                logger.warning("Invalid path format for avatar: " + path);
+
+                imgSteal(imagePath, exchange);
             }
+        }
     }
         private static void handleWeb(HttpExchange exchange, String requestMethod, String path) throws IOException, SQLException, ClassNotFoundException {
            if (requestMethod.equalsIgnoreCase("POST") && path.equals("/web/api")) {
@@ -274,31 +298,42 @@ public class mainService {
         }
     }
         private static void imgSteal(String imgPath, HttpExchange exchange) throws IOException {
-        // 使用 getResourceAsStream 获取资源文件流
-        InputStream inputStream = mainService.class.getResourceAsStream(imgPath);
-        if (inputStream == null) {
-            throw new IOException("Image not found: " + imgPath);
-        }
+            Path filePath = Paths.get(imgPath);
+            long lastModified = Files.getLastModifiedTime(filePath).toMillis();
 
-        try (InputStream imageStream = inputStream) {
-            BufferedImage image = ImageIO.read(imageStream);
+            byte[] imageBytes = mainService.cache.get(imgPath);
+            Cache.CacheItem<byte[]> cachedItem = mainService.cache.cacheMap.get(imgPath);
+
+            if (imageBytes == null || (cachedItem != null && cachedItem.getLastModified() < lastModified)) {
+                logger.info("Cache miss or file updated for image: " + imgPath);
+                // 使用 getResourceAsStream 获取资源文件流
+
+                try (InputStream imageStream = Files.newInputStream(filePath)) {
+                    BufferedImage image = ImageIO.read(imageStream);
+                    String fileExtension = getFileExtension(imgPath);
+
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    ImageIO.write(image, fileExtension, outputStream);
+                    imageBytes = outputStream.toByteArray();
+
+                    // 将图像字节数组存入缓存，设置过期时间为 5 分钟
+                    mainService.cache.put(imgPath, imageBytes, 5 * 1000, lastModified);
+                } catch (IOException e) {
+                    throw new IOException("Error reading image: " + imgPath, e);
+                }
+            } else {
+                logger.info("Cache hit for image: " + imgPath);
+            }
+
             String fileExtension = getFileExtension(imgPath);
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ImageIO.write(image, fileExtension, outputStream);
-            byte[] imageBytes = outputStream.toByteArray();
-
             String contentType = "image/" + fileExtension;
             exchange.getResponseHeaders().set("Content-Type", contentType);
-
             exchange.sendResponseHeaders(200, imageBytes.length);
             try (OutputStream responseBody = exchange.getResponseBody()) {
                 responseBody.write(imageBytes);
             }
-        } catch (IOException e) {
-            throw new IOException("Error reading image: " + imgPath, e);
         }
-    }
+
         // 获取文件扩展名
         private static String getFileExtension(String filePath) {
             Path path = Paths.get(filePath);
