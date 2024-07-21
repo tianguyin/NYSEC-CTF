@@ -16,7 +16,10 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.*;
+<<<<<<< HEAD
 import java.util.concurrent.ExecutorService;
+=======
+>>>>>>> de0ad9e44f749a8a6efa4541372f7cd523992c2a
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -98,7 +101,15 @@ public class mainService {
                 }
 
                 imgSteal(imagePath, exchange);
+<<<<<<< HEAD
             }
+=======
+            } else {
+                logger.warning("Invalid request method for avatar retrieval: " + requestMethod);
+            }
+        } else {
+            logger.warning("Invalid path format for avatar: " + path);
+>>>>>>> de0ad9e44f749a8a6efa4541372f7cd523992c2a
         }
     }
         private static void handleWeb(HttpExchange exchange, String requestMethod, String path) throws IOException, SQLException, ClassNotFoundException {
@@ -307,8 +318,17 @@ public class mainService {
             if (imageBytes == null || (cachedItem != null && cachedItem.getLastModified() < lastModified)) {
                 logger.info("Cache miss or file updated for image: " + imgPath);
                 // 使用 getResourceAsStream 获取资源文件流
+<<<<<<< HEAD
 
                 try (InputStream imageStream = Files.newInputStream(filePath)) {
+=======
+                InputStream inputStream = Files.newInputStream(filePath);
+                if (inputStream == null) {
+                    throw new IOException("Image not found: " + imgPath);
+                }
+
+                try (InputStream imageStream = inputStream) {
+>>>>>>> de0ad9e44f749a8a6efa4541372f7cd523992c2a
                     BufferedImage image = ImageIO.read(imageStream);
                     String fileExtension = getFileExtension(imgPath);
 
