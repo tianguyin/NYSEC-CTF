@@ -16,10 +16,8 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.*;
-<<<<<<< HEAD
 import java.util.concurrent.ExecutorService;
-=======
->>>>>>> de0ad9e44f749a8a6efa4541372f7cd523992c2a
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -101,17 +99,16 @@ public class mainService {
                 }
 
                 imgSteal(imagePath, exchange);
-<<<<<<< HEAD
             }
-=======
-            } else {
+            else {
                 logger.warning("Invalid request method for avatar retrieval: " + requestMethod);
             }
         } else {
             logger.warning("Invalid path format for avatar: " + path);
->>>>>>> de0ad9e44f749a8a6efa4541372f7cd523992c2a
         }
-    }
+            }
+
+
         private static void handleWeb(HttpExchange exchange, String requestMethod, String path) throws IOException, SQLException, ClassNotFoundException {
            if (requestMethod.equalsIgnoreCase("POST") && path.equals("/web/api")) {
             String response = getRequestData(exchange);
@@ -318,17 +315,11 @@ public class mainService {
             if (imageBytes == null || (cachedItem != null && cachedItem.getLastModified() < lastModified)) {
                 logger.info("Cache miss or file updated for image: " + imgPath);
                 // 使用 getResourceAsStream 获取资源文件流
-<<<<<<< HEAD
 
-                try (InputStream imageStream = Files.newInputStream(filePath)) {
-=======
-                InputStream inputStream = Files.newInputStream(filePath);
-                if (inputStream == null) {
-                    throw new IOException("Image not found: " + imgPath);
-                }
 
-                try (InputStream imageStream = inputStream) {
->>>>>>> de0ad9e44f749a8a6efa4541372f7cd523992c2a
+                try (InputStream _ = Files.newInputStream(filePath)) {
+
+                    try (InputStream imageStream = Files.newInputStream(filePath)) {
                     BufferedImage image = ImageIO.read(imageStream);
                     String fileExtension = getFileExtension(imgPath);
 
@@ -341,7 +332,7 @@ public class mainService {
                 } catch (IOException e) {
                     throw new IOException("Error reading image: " + imgPath, e);
                 }
-            } else {
+            } finally {
                 logger.info("Cache hit for image: " + imgPath);
             }
 
@@ -352,7 +343,7 @@ public class mainService {
             try (OutputStream responseBody = exchange.getResponseBody()) {
                 responseBody.write(imageBytes);
             }
-        }
+        }}
 
         // 获取文件扩展名
         private static String getFileExtension(String filePath) {
